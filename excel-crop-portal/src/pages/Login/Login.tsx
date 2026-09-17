@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import excelCropGroupLogo from "../../assets/excel-crop-group-logo.png";
 
 /**
  * Excel Crop Group — Sales Order Portal — Login Page
@@ -22,12 +23,14 @@ import React, { useState, useEffect, useCallback } from "react";
  *    from BRAND_TOKENS and wire them up there — the className strings in
  *    this file would then swap from `bg-[var(--g1)]` to `bg-brand-g1`.
  *
- * 3. Logo — replace LOGO_SRC below with the real asset path once this
- *    lives in your app (e.g. `/assets/excel-crop-group-logo.png`).
+ * 3. Logo — imported directly from src/assets/excel-crop-group-logo.png so
+ *    Vite bundles and hashes it automatically. Drop the real file at that
+ *    path (already done if you're using the version I gave you).
  *
- * 4. Auth wiring — `handleSubmit` is stubbed with a mock async call and
- *    a deliberately-triggered error path for demo purposes. Swap the
- *    body of `submitLogin` for your real API call.
+ * 4. Auth wiring — `submitLogin` is stubbed with a mock async call that
+ *    succeeds once both fields are filled in (it previously always threw,
+ *    which is why login looked broken — that's fixed now). Swap its body
+ *    for your real API call when the backend is ready.
  *
  * 5. Sign up — this page only links to `/register` ("Create an account"),
  *    for first-time users who need to register before they can log in.
@@ -55,7 +58,7 @@ const BRAND_TOKENS: React.CSSProperties = {
   ["--rad2" as string]: "14px",
 };
 
-const LOGO_SRC = "/assets/excel-crop-group-logo.png"; // swap for real asset path
+const LOGO_SRC = excelCropGroupLogo;
 
 // ---------------------------------------------------------------------------
 // Small hook: inject Google Fonts once
@@ -179,12 +182,27 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const submitLogin = useCallback(async (): Promise<void> => {
-    // Replace this stub with a real API call, e.g.:
-    // const res = await fetch("/api/auth/login", { method: "POST", body: ... });
-    // if (!res.ok) throw new Error("Invalid username or password.");
+  const submitLogin = useCallback(async (loginEmail: string, loginPassword: string): Promise<void> => {
+    // TODO: replace this stub with your real API call, e.g.:
+    // const res = await fetch("/api/auth/login", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+    // });
+    // if (!res.ok) {
+    //   const data = await res.json().catch(() => null);
+    //   throw new Error(data?.message ?? "Invalid username or password.");
+    // }
+    // return res.json();
+
+    // Demo-only mock: simulates a network round trip and succeeds as long
+    // as both fields are filled in. This previously always threw an error
+    // on every submit — that was the bug making the login look broken.
     await new Promise((resolve) => setTimeout(resolve, 900));
-    throw new Error("Invalid username or password.");
+    if (!loginEmail.trim() || !loginPassword.trim()) {
+      throw new Error("Please enter both your username/email and password.");
+    }
+    // Success — no error thrown. Hook up real navigation once the API call above is wired in.
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -192,7 +210,7 @@ const LoginPage: React.FC = () => {
     setError(null);
     setLoading(true);
     try {
-      await submitLogin();
+      await submitLogin(email, password);
       // navigate to dashboard on success
     } catch (err) {
       setError(
@@ -434,12 +452,12 @@ const LoginPage: React.FC = () => {
               <a
                 href="#forgot-password"
                 className="text-[12.5px] font-medium transition-colors"
-                style={{ color: "var(--g1)" }}
+                style={{ color: "var(--o1)" }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.color = "var(--o1)")
+                  (e.currentTarget.style.color = "var(--g1)")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "var(--g1)")
+                  (e.currentTarget.style.color = "var(--o1)")
                 }
               >
                 Forgot password?
@@ -481,12 +499,12 @@ const LoginPage: React.FC = () => {
             <a
               href="/register"
               className="font-semibold transition-colors"
-              style={{ color: "var(--g1)" }}
+              style={{ color: "var(--o1)" }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.color = "var(--o1)")
+                (e.currentTarget.style.color = "var(--g1)")
               }
               onMouseLeave={(e) =>
-                (e.currentTarget.style.color = "var(--g1)")
+                (e.currentTarget.style.color = "var(--o1)")
               }
             >
               Create an account
