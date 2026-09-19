@@ -1,1 +1,313 @@
 @import "tailwindcss";
+
+/* ---------------------------------------------------------------------- */
+/* Excel Crop Group — brand tokens (single source of truth, app-wide)      */
+/* ---------------------------------------------------------------------- */
+:root {
+  /* Greens — primary brand */
+  --g1: #1b6e1b;
+  --g2: #2d8a2d;
+  --g3: #e8f5e9;
+
+  /* Oranges — accent / CTA */
+  --o1: #e65100;
+  --o2: #f57c00;
+  --o3: #ff9800;
+
+  /* Status */
+  --r1: #c62828;
+
+  /* Text */
+  --txt: #1a1a1a;
+  --txt2: #555555;
+  --txt3: #888888;
+
+  /* Surfaces */
+  --border: #e0e0e0;
+  --bg: #f5f5f5;
+
+  /* Elevation */
+  --sh: 0 2px 12px rgba(0, 0, 0, 0.1);
+  --sh2: 0 6px 24px rgba(0, 0, 0, 0.15);
+
+  /* Radius */
+  --rad: 8px;
+  --rad2: 14px;
+}
+
+html,
+body {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--txt);
+  background: var(--bg);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Shared section-header pattern (reused across dashboard pages)           */
+/* ---------------------------------------------------------------------- */
+.stitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--g1);
+  padding-left: 14px;
+  position: relative;
+}
+.stitle::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 24px;
+  background: var(--o1);
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Shared card pattern                                                     */
+/* ---------------------------------------------------------------------- */
+.ecg-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--rad2);
+  box-shadow: var(--sh);
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+.ecg-card:hover {
+  box-shadow: var(--sh2);
+  transform: translateY(-3px);
+  border-color: #cde8cd;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Reveal-on-load animation (dashboard KPI cards, first paint only)         */
+/* ---------------------------------------------------------------------- */
+@keyframes ecg-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.ecg-reveal {
+  animation: ecg-reveal 0.45s ease both;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Login page — premium mobile decorative animation (blobs + particles)    */
+/* ---------------------------------------------------------------------- */
+@keyframes ecg-blob-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(8px, -14px) scale(1.06); }
+  66% { transform: translate(-10px, 6px) scale(0.96); }
+}
+@keyframes ecg-particle-drift {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 0.9; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(-46px) translateX(6px); opacity: 0; }
+}
+@keyframes ecg-glow-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.9; }
+}
+@keyframes ecg-shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.ecg-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(2px);
+  animation: ecg-blob-float 9s ease-in-out infinite;
+  will-change: transform;
+}
+.ecg-blob.ecg-blob-slow {
+  animation-duration: 13s;
+}
+.ecg-particle {
+  position: absolute;
+  border-radius: 9999px;
+  animation: ecg-particle-drift 5.5s ease-in infinite;
+  will-change: transform, opacity;
+}
+.ecg-glow {
+  animation: ecg-glow-pulse 4s ease-in-out infinite;
+}
+.ecg-shimmer-text {
+  background-size: 200% auto;
+  animation: ecg-shimmer 6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ecg-blob,
+  .ecg-particle,
+  .ecg-glow,
+  .ecg-shimmer-text,
+  .ecg-reveal {
+    animation: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Buttons — shared primary/secondary/pill/destructive patterns (2.6)      */
+/* ---------------------------------------------------------------------- */
+.ecg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 13.5px;
+  border-radius: var(--rad);
+  padding: 11px 18px;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease,
+    transform 0.12s ease, box-shadow 0.18s ease;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+}
+.ecg-btn:active { transform: translateY(1px); }
+.ecg-btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+.ecg-btn-primary { background: var(--g1); color: #fff; }
+.ecg-btn-primary:hover:not(:disabled) { background: var(--o1); box-shadow: 0 4px 14px rgba(230,81,0,0.28); }
+
+.ecg-btn-secondary { background: transparent; color: var(--g1); border-color: var(--g2); }
+.ecg-btn-secondary:hover:not(:disabled) { background: var(--g2); color: #fff; }
+
+.ecg-btn-destructive { background: var(--r1); color: #fff; }
+.ecg-btn-destructive:hover:not(:disabled) { background: #a81f1f; }
+
+.ecg-btn-ghost { background: transparent; color: var(--txt2); }
+.ecg-btn-ghost:hover:not(:disabled) { background: var(--g3); color: var(--g1); }
+
+.ecg-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: var(--g3);
+  color: var(--g1);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.ecg-pill-active { background: var(--g1); color: #fff; }
+
+/* ---------------------------------------------------------------------- */
+/* Logo "chip" — white rounded plate for placing the flat-white-bg logo    */
+/* on top of colored (green) surfaces without an ugly white box look       */
+/* ---------------------------------------------------------------------- */
+.ecg-logo-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  padding: 6px 10px;
+}
+
+/* Subtle dot-grid texture for hero / decorative panels */
+.ecg-pattern-dots {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Auth form inputs — shared focus treatment                               */
+/* ---------------------------------------------------------------------- */
+.ecg-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--rad);
+  outline: none;
+  color: var(--txt);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.ecg-input::placeholder { color: var(--txt3); }
+.ecg-input:focus {
+  border-color: var(--g2);
+  box-shadow: 0 0 0 3px rgba(45, 138, 45, 0.15);
+}
+.ecg-input.ecg-input-error {
+  border-color: var(--r1);
+}
+.ecg-input.ecg-input-error:focus {
+  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.15);
+}
+
+/* ---------------------------------------------------------------------- */
+/* OTP boxes                                                                */
+/* ---------------------------------------------------------------------- */
+.ecg-otp-box {
+  width: 44px;
+  height: 52px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  border: 1.5px solid var(--border);
+  border-radius: var(--rad);
+  outline: none;
+  color: var(--txt);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.ecg-otp-box:focus {
+  border-color: var(--g2);
+  box-shadow: 0 0 0 3px rgba(45, 138, 45, 0.15);
+  transform: translateY(-1px);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Step / progress dots for multi-step flows (forgot password wizard)      */
+/* ---------------------------------------------------------------------- */
+.ecg-step-track {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ecg-step-dot {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  flex: 1;
+  transition: background-color 0.25s ease;
+}
+.ecg-step-dot.ecg-step-done { background: var(--g2); }
+.ecg-step-dot.ecg-step-current { background: var(--o1); }
+
+/* ---------------------------------------------------------------------- */
+/* Success check — bouncy scale-in for confirmation states                 */
+/* ---------------------------------------------------------------------- */
+@keyframes ecg-pop-in {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.ecg-pop-in { animation: ecg-pop-in 0.45s cubic-bezier(.34,1.56,.64,1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ecg-pop-in { animation: none !important; }
+}
+
+/* Faint dot-grid for light (page-background) surfaces, e.g. dashboard main area */
+.ecg-pattern-dots-light {
+  background-image: radial-gradient(rgba(27, 110, 27, 0.06) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
