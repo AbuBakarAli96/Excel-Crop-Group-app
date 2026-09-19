@@ -118,3 +118,43 @@ export const IconChevronRight: React.FC<IconProps> = ({ size, className }) => (
     <path d="M9 6l6 6-6 6" />
   </svg>
 );
+
+export const IconBuilding: React.FC<IconProps> = ({ size, className }) => (
+  <svg {...base(size)} className={className}>
+    <rect x="4" y="3" width="10" height="18" rx="1" />
+    <path d="M14 8h6v13h-6M7 7h1M7 11h1M7 15h1M10.5 7h1M10.5 11h1M10.5 15h1" />
+  </svg>
+);
+
+export const IconSearch: React.FC<IconProps> = ({ size, className }) => (
+  <svg {...base(size)} className={className}>
+    <circle cx="11" cy="11" r="7" />
+    <path d="m21 21-4.3-4.3" />
+  </svg>
+);
+
+export const IconChevronDown: React.FC<IconProps> = ({ size, className }) => (
+  <svg {...base(size)} className={className}>
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+);
+
+export const IconInbox: React.FC<IconProps> = ({ size, className }) => (
+  <svg {...base(size)} className={className}>
+    <path d="M22 12h-6l-2 3h-4l-2-3H2" />
+    <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z" />
+  </svg>
+);
+
+export const IconLeaf: React.FC<IconProps> = ({ size, className }) => (
+  <svg {...base(size)} className={className}>
+    <path d="M11 20A7 7 0 0 1 4 13V8a1 1 0 0 1 1-1h5a7 7 0 0 1 7 7v1a5 5 0 0 1-5 5Z" />
+    <path d="M4.5 8.5 20 3" />
+  </svg>
+);
+
+export const IconCheck: React.FC<IconProps> = ({ size, className }) => (
+  <svg {...base(size)} className={className}>
+    <path d="M20 6 9 17l-5-5" />
+  </svg>
+);

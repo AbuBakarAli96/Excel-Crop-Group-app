@@ -311,3 +311,8 @@ body {
   background-image: radial-gradient(rgba(27, 110, 27, 0.06) 1px, transparent 1px);
   background-size: 20px 20px;
 }
+
+/* Organic (leaf-like, asymmetric) blob shape — used sparingly, not a perfect circle */
+.ecg-organic {
+  border-radius: 62% 38% 55% 45% / 45% 55% 45% 55%;
+}

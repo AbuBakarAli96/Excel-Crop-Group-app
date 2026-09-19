@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { IconLeaf } from "./icons";
 
 const LOGO_SRC = "/assets/excel-crop-group-logo.png";
 
@@ -34,28 +35,33 @@ const TRUST_ITEMS = [
 ];
 
 // ---------------------------------------------------------------------------
-// Mobile hero animation — floating gradient blobs + drifting particles
+// Hero decoration — one soft organic shape + a faint leaf watermark.
+// Deliberately restrained: this is a business system, not a landing page.
 // ---------------------------------------------------------------------------
-const MobileHeroAnimation: React.FC = () => (
+const HeroDecoration: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-    <div className="ecg-blob ecg-glow" style={{ width: 130, height: 130, top: -30, left: -20, background: "var(--o1)", opacity: 0.28 }} />
-    <div className="ecg-blob ecg-blob-slow" style={{ width: 100, height: 100, bottom: -24, right: -10, background: "#ffffff", opacity: 0.16 }} />
-    <div className="ecg-blob" style={{ width: 60, height: 60, top: 18, right: 40, background: "var(--o3)", opacity: 0.22, animationDelay: "1.2s" }} />
-    {[...Array(6)].map((_, i) => (
-      <span
-        key={i}
-        className="ecg-particle"
-        style={{
-          width: 4,
-          height: 4,
-          background: "#ffffff",
-          left: `${12 + i * 15}%`,
-          bottom: 10,
-          animationDelay: `${i * 0.7}s`,
-          animationDuration: `${4.5 + (i % 3)}s`,
-        }}
-      />
-    ))}
+    <div
+      className="ecg-blob ecg-organic ecg-blob-slow"
+      style={{
+        width: compact ? 130 : 220,
+        height: compact ? 130 : 220,
+        top: compact ? -30 : -40,
+        right: compact ? -20 : -30,
+        background: "var(--o1)",
+        opacity: 0.16,
+      }}
+    />
+    <div
+      className="absolute text-white"
+      style={{
+        bottom: compact ? -10 : -20,
+        left: compact ? -10 : 30,
+        opacity: 0.08,
+        transform: "rotate(-18deg)",
+      }}
+    >
+      <IconLeaf size={compact ? 90 : 170} />
+    </div>
   </div>
 );
 
@@ -108,8 +114,7 @@ const AuthShell: React.FC<AuthShellProps> = ({
             className="absolute inset-0"
             style={{ background: "linear-gradient(135deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.05) 60%)" }}
           />
-          <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full opacity-20" style={{ background: "var(--o1)" }} />
-          <div className="absolute top-10 right-10 w-24 h-24 rounded-full opacity-20 ecg-glow" style={{ background: "var(--o3)" }} />
+          <HeroDecoration />
 
           <div className="relative z-10 flex items-center gap-4">
             <span className="ecg-logo-chip">
@@ -158,7 +163,7 @@ const AuthShell: React.FC<AuthShellProps> = ({
           className="min-[980px]:hidden relative overflow-hidden flex flex-col items-center justify-center text-center px-6 py-7 ecg-pattern-dots"
           style={{ background: "linear-gradient(135deg, var(--g1) 0%, var(--g2) 100%)", minHeight: 176 }}
         >
-          <MobileHeroAnimation />
+          <HeroDecoration compact />
           <div className="relative z-10 flex flex-col items-center">
             <span className="ecg-logo-chip mb-2.5">
               <img

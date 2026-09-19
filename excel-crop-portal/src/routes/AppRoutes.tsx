@@ -7,6 +7,7 @@ import LoginPage from "../pages/Login/Login";
 import SignUpPage from "../pages/SignUp/SignUp";
 import ForgotPasswordPage from "../pages/ForgotPassword/ForgotPassword";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import AccessRequestsPage from "../pages/AccessRequests/AccessRequests";
 import ComingSoon from "../pages/ComingSoon/ComingSoon";
 import { useAuth } from "../context/AuthContext";
 
@@ -47,6 +48,7 @@ const AppRoutes: React.FC = () => {
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/access-requests" element={<AccessRequestsPage />} />
           {PLACEHOLDER_ROUTES.map((route) => (
             <Route key={route.path} path={route.path} element={<ComingSoon title={route.title} />} />
           ))}

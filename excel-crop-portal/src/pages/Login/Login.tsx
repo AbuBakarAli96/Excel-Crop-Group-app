@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import AuthShell from "../../components/AuthShell";
+import { AccessStatusError } from "../../services/authService";
 
 const LOGO_SRC = "/assets/excel-crop-group-logo.png";
 
@@ -33,6 +34,13 @@ const AlertIcon: React.FC = () => (
   </svg>
 );
 
+const ClockIcon: React.FC = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 6v6l4 2" />
+  </svg>
+);
+
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -42,18 +50,27 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [banner, setBanner] = useState<{ type: "error" | "pending"; message: string } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setBanner(null);
     setLoading(true);
     try {
-      await login({ username: email, password });
+      const result = await login({ username: email, password });
       const redirectTo = location.state?.from?.pathname ?? "/dashboard";
-      navigate(redirectTo, { replace: true });
+      navigate(redirectTo, {
+        replace: true,
+        state: result.justApproved
+          ? { justApproved: true, roleLabel: result.roleLabel }
+          : undefined,
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      if (err instanceof AccessStatusError) {
+        setBanner({ type: err.status === "PENDING" ? "pending" : "error", message: err.message });
+      } else {
+        setBanner({ type: "error", message: err instanceof Error ? err.message : "Something went wrong. Please try again." });
+      }
     } finally {
       setLoading(false);
     }
@@ -78,14 +95,18 @@ const LoginPage: React.FC = () => {
         Sign in to your Sales Order Portal account
       </p>
 
-      {error && (
+      {banner && (
         <div
           className="mb-5 flex items-start gap-2 px-4 py-3 text-sm rounded-[6px]"
-          style={{ background: "#fdecea", color: "var(--r1)", borderLeft: "3px solid var(--r1)" }}
+          style={
+            banner.type === "pending"
+              ? { background: "#fff4e0", color: "var(--o2)", borderLeft: "3px solid var(--o2)" }
+              : { background: "#fdecea", color: "var(--r1)", borderLeft: "3px solid var(--r1)" }
+          }
           role="alert"
         >
-          <AlertIcon />
-          <span>{error}</span>
+          {banner.type === "pending" ? <ClockIcon /> : <AlertIcon />}
+          <span>{banner.message}</span>
         </div>
       )}
 
@@ -158,6 +179,8 @@ const LoginPage: React.FC = () => {
       >
         <strong>Demo accounts</strong> (password: <code>password</code>):<br />
         territory@excelcropgroup.com.pk · regional@excelcropgroup.com.pk · hq@excelcropgroup.com.pk
+        <br />
+        <em>Try a pending request:</em> abubakar.ali@excelcropgroup.com.pk
       </div>
 
       <p className="mt-5 text-center text-[13px] text-[var(--txt2)]">
