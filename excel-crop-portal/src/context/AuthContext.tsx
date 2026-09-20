@@ -1,12 +1,11 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 import type { LoginCredentials, User } from "../types/auth";
 import { getStoredUser, login as loginRequest, logout as logoutRequest } from "../services/authService";
-import type { LoginResult } from "../services/authService";
 
 interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
-  login: (credentials: LoginCredentials) => Promise<LoginResult>;
+  login: (credentials: LoginCredentials) => Promise<User>;
   logout: () => void;
 }
 
@@ -16,9 +15,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(() => getStoredUser());
 
   const login = useCallback(async (credentials: LoginCredentials) => {
-    const result = await loginRequest(credentials);
-    setUser(result.user);
-    return result;
+    const loggedInUser = await loginRequest(credentials);
+    setUser(loggedInUser);
+    return loggedInUser;
   }, []);
 
   const logout = useCallback(() => {

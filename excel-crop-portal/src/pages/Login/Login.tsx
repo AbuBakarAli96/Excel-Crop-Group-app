@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import AuthShell from "../../components/AuthShell";
-import { AccessStatusError } from "../../services/authService";
+import { AccountStatusError } from "../../services/authService";
 
 const LOGO_SRC = "/assets/excel-crop-group-logo.png";
 
@@ -57,19 +57,17 @@ const LoginPage: React.FC = () => {
     setBanner(null);
     setLoading(true);
     try {
-      const result = await login({ username: email, password });
+      await login({ username: email, password });
       const redirectTo = location.state?.from?.pathname ?? "/dashboard";
-      navigate(redirectTo, {
-        replace: true,
-        state: result.justApproved
-          ? { justApproved: true, roleLabel: result.roleLabel }
-          : undefined,
-      });
+      navigate(redirectTo, { replace: true });
     } catch (err) {
-      if (err instanceof AccessStatusError) {
+      if (err instanceof AccountStatusError) {
         setBanner({ type: err.status === "PENDING" ? "pending" : "error", message: err.message });
       } else {
-        setBanner({ type: "error", message: err instanceof Error ? err.message : "Something went wrong. Please try again." });
+        setBanner({
+          type: "error",
+          message: err instanceof Error ? err.message : "Something went wrong. Please try again.",
+        });
       }
     } finally {
       setLoading(false);
@@ -78,8 +76,23 @@ const LoginPage: React.FC = () => {
 
   return (
     <AuthShell
-      heroHeadline="Run your entire sales order pipeline from one portal."
-      heroBody="Place, track, recommend and approve crop input orders — built for Excel Crop Group's Territory Managers, Regional Managers and Head Office."
+      heroSlides={[
+        {
+          headline: "Run your entire sales order pipeline from one portal.",
+          body: "Place, track, recommend and approve crop input orders — built for Excel Crop Group's Territory Managers, Regional Managers and Head Office.",
+          image: "/assets/photos/hero-sprayer.jpg",
+        },
+        {
+          headline: "From field request to approved invoice, in one flow.",
+          body: "Every order moves through a clear pipeline — submitted, recommended, approved, invoiced — so nothing gets lost between a territory and Head Office.",
+          image: "/assets/photos/hero-harvester.jpg",
+        },
+        {
+          headline: "Built for how Excel Crop Group actually works.",
+          body: "Role-aware dashboards mean a Territory Manager, Regional Manager and Head Office each see exactly what's relevant to them — nothing more.",
+          image: "/assets/photos/hero-rice-harvest.jpg",
+        },
+      ]}
     >
       {/* Card header — real logo, no redundant text wordmark since the logo already carries it */}
       <div className="flex flex-col items-center mb-2">
@@ -179,8 +192,6 @@ const LoginPage: React.FC = () => {
       >
         <strong>Demo accounts</strong> (password: <code>password</code>):<br />
         territory@excelcropgroup.com.pk · regional@excelcropgroup.com.pk · hq@excelcropgroup.com.pk
-        <br />
-        <em>Try a pending request:</em> abubakar.ali@excelcropgroup.com.pk
       </div>
 
       <p className="mt-5 text-center text-[13px] text-[var(--txt2)]">

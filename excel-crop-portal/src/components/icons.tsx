@@ -158,3 +158,24 @@ export const IconCheck: React.FC<IconProps> = ({ size, className }) => (
     <path d="M20 6 9 17l-5-5" />
   </svg>
 );
+
+export const IconUsersGroup: React.FC<IconProps> = ({ size, className }) => (
+  <svg {...base(size)} className={className}>
+    <circle cx="8" cy="8" r="3" />
+    <circle cx="16" cy="8" r="3" />
+    <path d="M2 20c.5-3.5 2.8-5.5 6-5.5s5.5 2 6 5.5" />
+    <path d="M14.5 14.6c2.9.3 4.9 2.2 5.5 5.4" />
+  </svg>
+);
+
+export const IconActivity: React.FC<IconProps> = ({ size, className }) => (
+  <svg {...base(size)} className={className}>
+    <path d="M22 12h-4l-3 8-6-16-3 8H2" />
+  </svg>
+);
+
+export const IconChevronLeft: React.FC<IconProps> = ({ size, className }) => (
+  <svg {...base(size)} className={className}>
+    <path d="m15 18-6-6 6-6" />
+  </svg>
+);

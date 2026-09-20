@@ -1,23 +1,37 @@
 /**
- * An organizational location a user can request access under.
- * Backed today by `mock/locations.ts`; swap that module's data source for a
- * real `/api/locations` call once the backend exposes one — nothing else
- * in the app needs to change, since everything consumes this shape.
+ * Structured location hierarchy: Country -> Province -> District -> City.
+ * Backed today by `data/locations/pakistan.ts` (a static starter dataset).
+ * Swap `locationService.ts`'s data source for a real `/api/locations`
+ * endpoint later — nothing else needs to change, since every consumer
+ * (LocationPicker, SignUp, Admin > Locations) only depends on these types
+ * and on `locationService`'s function signatures.
  */
-export type LocationType = "TERRITORY" | "REGION" | "HEAD_OFFICE";
 
-export interface OrganizationalLocation {
-  id: string;
+export interface District {
   name: string;
-  type: LocationType;
-  /** Parent region name, only meaningful for TERRITORY entries */
-  parentRegion?: string;
-  /** The role a user is granted when their request under this location is approved */
-  roleLabel: string;
+  /** Cities/towns within this district. Most districts list their own
+   * namesake city first, plus any other well-known towns in the area. */
+  cities: string[];
 }
 
-export const LOCATION_TYPE_LABEL: Record<LocationType, string> = {
-  TERRITORY: "Territory",
-  REGION: "Region",
-  HEAD_OFFICE: "Head Office",
-};
+export interface Province {
+  name: string;
+  districts: District[];
+}
+
+export interface Country {
+  name: string;
+  provinces: Province[];
+}
+
+/** A single resolved location, as stored against a user/registration. */
+export interface SelectedLocation {
+  country: string;
+  province: string;
+  district: string;
+  city: string;
+  /** True when the city was typed manually rather than picked from the list
+   * (i.e. it wasn't found in the current dataset). Lets an admin spot and
+   * fold new cities into the dataset later. */
+  isCustomCity?: boolean;
+}

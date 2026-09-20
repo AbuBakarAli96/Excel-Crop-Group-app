@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import StatTile from "../../components/StatTile";
 import StatusBadge from "../../components/StatusBadge";
@@ -12,7 +12,6 @@ import {
   IconInvoice,
   IconPlus,
   IconChevronRight,
-  IconCheck,
 } from "../../components/icons";
 
 const currency = (n: number) => `Rs ${n.toLocaleString("en-PK")}`;
@@ -28,9 +27,7 @@ const PILL_TABS: { key: OrderStatus | "ALL"; label: string }[] = [
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const routerLocation = useLocation() as { state?: { justApproved?: boolean; roleLabel?: string } };
   const [activeTab, setActiveTab] = useState<OrderStatus | "ALL">("ALL");
-  const [showApprovedBanner, setShowApprovedBanner] = useState(!!routerLocation.state?.justApproved);
 
   const orders = useMemo(
     () => (activeTab === "ALL" ? MOCK_ORDERS : MOCK_ORDERS.filter((o) => o.status === activeTab)),
@@ -38,6 +35,11 @@ const Dashboard: React.FC = () => {
   );
 
   if (!user) return null;
+
+  // Admin uses its own dedicated dashboard.
+  if (user.role === "ADMIN") {
+    return <Navigate to="/admin-dashboard" replace />;
+  }
 
   const heading =
     user.role === "TERRITORY_MANAGER"
@@ -55,39 +57,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
-      {showApprovedBanner && (
-        <div
-          className="ecg-pop-in mb-6 flex items-start gap-3 px-4 py-3.5 rounded-[10px]"
-          style={{ background: "var(--g3)", border: "1px solid #cde8cd" }}
-        >
-          <div
-            className="h-8 w-8 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "var(--g1)", color: "#fff" }}
-          >
-            <IconCheck size={16} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[13.5px] font-bold text-[var(--g1)]">Your access has been approved.</div>
-            <p className="text-[12.5px] text-[var(--txt2)] mt-0.5">
-              Welcome to Excel Crop Group.
-              {routerLocation.state?.roleLabel && (
-                <>
-                  {" "}
-                  Your assigned role: <strong>{routerLocation.state.roleLabel}</strong>
-                </>
-              )}
-            </p>
-          </div>
-          <button
-            onClick={() => setShowApprovedBanner(false)}
-            aria-label="Dismiss"
-            className="text-[var(--g1)]/60 hover:text-[var(--g1)] text-lg leading-none shrink-0"
-          >
-            ×
-          </button>
-        </div>
-      )}
-
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>

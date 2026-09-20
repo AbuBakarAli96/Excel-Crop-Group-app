@@ -11,15 +11,12 @@ import {
   IconInvoice,
   IconReport,
   IconSettings,
-  IconInbox,
 } from "../components/icons";
 
 export interface NavItem {
   label: string;
   path: string;
   icon: ComponentType<{ size?: number; className?: string }>;
-  /** When set, DashboardLayout renders a live count badge next to this item. */
-  badgeKey?: "pendingAccessRequests";
 }
 
 const SHARED_TOP: NavItem[] = [{ label: "Dashboard", path: "/dashboard", icon: IconGrid }];
@@ -43,7 +40,6 @@ const BY_ROLE: Record<Role, NavItem[]> = {
   ],
   HEAD_OFFICE: [
     { label: "Global Order Queue", path: "/orders", icon: IconOrders },
-    { label: "Access Requests", path: "/access-requests", icon: IconInbox, badgeKey: "pendingAccessRequests" },
     { label: "Approve / Reject", path: "/orders/approve", icon: IconDoc },
     { label: "Regions Overview", path: "/regions", icon: IconMap },
     { label: "All Territories", path: "/territories", icon: IconMap },
@@ -52,6 +48,9 @@ const BY_ROLE: Record<Role, NavItem[]> = {
     { label: "Farzi Invoice", path: "/farzi-invoice", icon: IconInvoice },
     { label: "Reports", path: "/reports", icon: IconReport },
   ],
+  // Admin has its own dedicated dashboard/layout (see AdminDashboard),
+  // so it doesn't use this sidebar nav today.
+  ADMIN: [],
 };
 
 export function getNavItemsForRole(role: Role): NavItem[] {

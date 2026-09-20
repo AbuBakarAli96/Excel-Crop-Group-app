@@ -122,6 +122,7 @@ const ForgotPasswordPage: React.FC = () => {
       <AuthShell
         heroHeadline="Password updated."
         heroBody="Your new password is active — head back to the login page to get back to your dashboard."
+        heroImage="/assets/photos/hero-harvester.jpg"
         hideTrustBadges
       >
         <div className="flex flex-col items-center text-center py-4">
@@ -150,6 +151,7 @@ const ForgotPasswordPage: React.FC = () => {
     <AuthShell
       heroHeadline="Forgot your password? No problem."
       heroBody="We'll send a one-time code to your registered email so you can get straight back into your Sales Order Portal account."
+      heroImage="/assets/photos/hero-sprayer.jpg"
       hideTrustBadges
     >
       <div className="flex flex-col items-center mb-2">

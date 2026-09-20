@@ -1,0 +1,80 @@
+EXCEL CROP GROUP — ADMIN LOGIN
+================================
+Documents the Admin authentication implementation as it exists in this
+codebase today (mock/frontend-only), and what changes when a real backend
+is connected.
+
+1. ROUTE
+--------
+  /admin-login            -> src/pages/AdminLogin/AdminLogin.tsx
+  /admin-dashboard/*       -> src/layouts/AdminLayout.tsx (protected)
+
+The Admin login page is intentionally separate from the regular Manager
+login (/login). Entry point is the Role Selection screen (/roleselection),
+which routes:
+  "Manager" card -> /login
+  "Admin"   card -> /admin-login
+
+2. DEMO CREDENTIALS (mock only — remove before production)
+------------------------------------------------------------
+  Email:    admin@excelcropgroup.com.pk
+  Password: admin123
+
+Defined in: src/services/authService.ts, DEMO_USERS["admin@excelcropgroup.com.pk"].
+This is the only account with role "ADMIN" today. Territory Manager,
+Regional Manager and Head Office demo accounts are also in the same file
+(see comment header there) but are unrelated to Admin access.
+
+3. HOW LOGIN WORKS TODAY (mock)
+--------------------------------
+authService.login(credentials) checks, in order:
+  a) DEMO_USERS — fixed accounts (Territory/Regional/Head Office/Admin).
+     If the email matches admin@excelcropgroup.com.pk and the password
+     matches "admin123", a User object with role "ADMIN" is returned and
+     cached in localStorage under key "ecg_auth_user".
+  b) registrationService self-service requests — NOT applicable to Admin.
+     Only Territory/Regional Manager accounts can be created via the
+     public Sign Up (/register) flow; there is no self-registration path
+     for the Admin role. New Admin accounts must be added directly to
+     DEMO_USERS (mock) or provisioned by the backend team once real auth
+     is wired up.
+
+4. ROUTE PROTECTION
+--------------------
+ProtectedRoute (src/components/ProtectedRoute.tsx) guards everything
+under AdminLayout. It now takes an optional `allowedRoles` prop:
+AppRoutes.tsx wraps the /admin-dashboard/* routes in
+<ProtectedRoute allowedRoles={["ADMIN"]}>, so a logged-in
+Territory/Regional/Head Office user who navigates there directly is
+redirected to their own /dashboard instead of seeing Admin screens.
+Manager routes are likewise wrapped with the three Manager roles, so an
+Admin account is redirected to /admin-dashboard if it ever tries to open
+/dashboard. An unauthenticated visitor is redirected to /login regardless
+of which area they requested.
+
+5. WHAT ADMIN CAN DO (src/layouts/AdminLayout.tsx nav)
+--------------------------------------------------------
+  Overview       /admin-dashboard             — stat tiles, recent activity, location coverage
+  Registrations  /admin-dashboard/registrations — approve/reject Territory & Regional Manager requests
+  Locations      /admin-dashboard/locations     — read-only browser over the Country/Province/District/City dataset
+  Users          /admin-dashboard/users         — read-only directory of built-in + approved accounts
+
+6. CONNECTING A REAL BACKEND
+------------------------------
+Replace the body of these functions — call sites elsewhere do not need to
+change, since everything only depends on these signatures:
+
+  authService.login(credentials)        -> POST /api/auth/login (or /api/admin/auth/login
+                                            if Admin auth is a separate backend concern)
+  authService.getBuiltInAccounts()      -> remove entirely once users come from a real
+                                            GET /api/users endpoint
+  registrationService.submitRequest     -> POST /api/registrations
+  registrationService.getAllRequests    -> GET  /api/registrations
+  registrationService.approveRequest    -> POST /api/registrations/:id/approve
+  registrationService.rejectRequest     -> POST /api/registrations/:id/reject
+  locationService.*                     -> GET  /api/locations (replaces data/locations/pakistan.ts)
+
+Also add real password hashing/verification server-side — the mock
+service stores registration passwords in plain text in localStorage
+(src/services/registrationService.ts), which is only acceptable for a
+frontend-only prototype.
