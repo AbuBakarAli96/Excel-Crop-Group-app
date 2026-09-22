@@ -16,6 +16,7 @@ import AdminRegistrations from "../pages/AdminDashboard/AdminRegistrations";
 import AdminLocations from "../pages/AdminDashboard/AdminLocations";
 import AdminUsers from "../pages/AdminDashboard/AdminUsers";
 import ComingSoon from "../pages/ComingSoon/ComingSoon";
+import NewOrder from "../pages/Orders/NewOrder";
 
 import RoleSelection from "../pages/RoleSelection";
 
@@ -31,7 +32,6 @@ const PLACEHOLDER_ROUTES: {
   title: string;
 }[] = [
   { path: "/orders", title: "Orders" },
-  { path: "/orders/new", title: "New Order" },
   { path: "/orders/recommend", title: "Recommend / Reject Orders" },
   { path: "/orders/approve", title: "Approve / Reject Orders" },
   { path: "/orders/:orderId", title: "Order Detail" },
@@ -122,6 +122,9 @@ const AppRoutes: React.FC = () => {
               path="/dashboard"
               element={<Dashboard />}
             />
+
+            {/* New Order — Territory Manager workflow */}
+            <Route path="/orders/new" element={<NewOrder />} />
 
             {/* Placeholder / future pages */}
             {PLACEHOLDER_ROUTES.map((route) => (
